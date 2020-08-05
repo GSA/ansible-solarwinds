@@ -1,0 +1,26 @@
+---
+- name: create {{ windows_agent_log }} directory
+  win_file:
+    path: '{{ windows_agent_log }}'
+    recurse: yes
+    state: directory
+
+- name: copy solarWinds-agent.mst to {{ windows_agent_path }} directory
+  win_get_url:
+    url: '{{ solarwinds_agent_config_url }}'
+    dest: '{{ windows_agent_path }}\\SolarWinds-Agent.mst'
+
+- name: install solarwinds agent (windows)
+  win_package:
+    path: '{{ windows_solarwinds_agent_url }}'
+    log_path: '{{ windows_agent_log }}\\solarwinds_log.txt'
+    product_id: '{{ windows_solarwinds_product_id }}'
+    validate_certs: no
+    state: present
+    arguments: /qn
+
+- name: create {{ windows_agent_path }} directory
+  win_file:
+    path: '{{ windows_agent_path }}'
+    recurse: yes
+    state: directory

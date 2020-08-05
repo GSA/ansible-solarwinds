@@ -1,37 +1,44 @@
-Role Name
+solarwinds [![circleci](https://circleci.com/gh/GSA/ansible-solarwinds.svg?style=svg)](https://circleci.com/gh/GSA/ansible-solarwinds)
 =========
 
-A brief description of the role goes here.
+This ansible role installs and configures the solarwinds agent required to communicate with client machines for logging & monitoring.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Required Packages (this role requires access to the following packages/installers)
+- solarwinds.rpm - redhat installer package
+- solarwinds.exe - windows installer package
+- linux-cw-agent.json - redhat configuration file
+- win-cw-agent.json - windows configuration file
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+| Variable | Default | Purpose |
+| ------ | ------ | ------ |
+| redhat_solarwinds_agent_filename | "" | redhat installer rpm |
+| windows_solarwinds_agent_filename | "" | windows installer msi |
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```yaml
+- hosts: servers
+  roles:
+     - solarwinds
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Public domain
+-------------
 
- Public domain
- -------------
+This project is in the worldwide [public domain](LICENSE.md). As stated in [CONTRIBUTING](CONTRIBUTING.md):
 
- This project is in the worldwide [public domain](LICENSE.md). As stated in [CONTRIBUTING](CONTRIBUTING.md):
-
- > This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/).
- >
- > All contributions to this project will be released under the CC0 dedication. By submitting a pull request, you are agreeing to comply with this waiver of copyright interest.
+> This project is in the public domain within the United States, and copyright and related rights in the work worldwide are waived through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/).
+>
+> All contributions to this project will be released under the CC0 dedication. By submitting a pull request, you are agreeing to comply with this waiver of copyright interest.

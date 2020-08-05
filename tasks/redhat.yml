@@ -1,0 +1,17 @@
+---
+- name: create {{ redhat_solarwinds_path }} directory
+  file:
+    path: '{{ redhat_solarwinds_path }}'
+    recurse: yes
+    state: directory
+    mode: '0755'
+
+- name: create solarwinds config (redhat)
+  template:
+    src: templates/amazon-solarwinds-agent.j2
+    dest: '{{ redhat_solarwinds_path }}/amazon-solarwinds-agent.json'
+
+- name: install solarwinds agent (redhat)
+  yum:
+    name: '{{ redhat_solarwinds_agent_url }}'
+    state: installed
