@@ -24,9 +24,3 @@
     validate_certs: no
     state: present
     arguments: /qn
-
-- name: create {{ windows_agent_path }} directory
-  win_file:
-    path: '{{ windows_agent_path }}'
-    recurse: yes
-    state: directory
