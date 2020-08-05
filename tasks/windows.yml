@@ -5,6 +5,12 @@
     recurse: yes
     state: directory
 
+- name: create {{ windows_agent_path }} directory
+  win_file:
+    path: '{{ windows_agent_path }}'
+    recurse: yes
+    state: directory
+
 - name: copy solarWinds-agent.mst to {{ windows_agent_path }} directory
   win_get_url:
     url: '{{ solarwinds_agent_config_url }}'
