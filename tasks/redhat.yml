@@ -1,13 +1,39 @@
 ---
+- name: checking for agent install
+  stat:
+    path: '{{ redhat_solarwinds_agent_path }}'
+  register: path
+
+- debug:
+    msg: "solarwinds agent not found"
+  when: path.stat.islnk is not defined
+
+- debug:
+    msg: "solarwinds agent found skipping install"
+  when: path.stat.islnk is defined
+
 - name: copying swiagent.tar.gz to /tmp for install
   get_url:
-    url: '{{ redhat_solarwinds_agent_path }}'
+    url: '{{ redhat_solarwinds_agent_url }}'
     dest: /tmp/swiagent.tar.gz
+    validate_certs: no
+    mode: 0755
+  when: path.stat.islnk is not defined
+
+- name: create /tmp/swiagent directory
+  file:
+    path: /tmp/swiagent
+    recurse: yes
+    state: directory
+    mode: 0755
+  when: path.stat.islnk is not defined
 
 - name: extract swiagent.tar.gz to /tmp for install
   unarchive:
     src: /tmp/swiagent.tar.gz
     dest: /tmp/swiagent
+    remote_src: yes
+  when: path.stat.islnk is not defined
 
 - name: change shell permissions for swiagent
   file:
@@ -15,6 +41,22 @@
     state: directory
     recurse: yes
     mode: a+x
+  when: path.stat.islnk is not defined
 
 - name: execute install.sh for swiagent
-  shell: /tmp/install.sh >> /tmp/solarwinds_install.txt
+  shell:
+    cmd: ./install.sh >> /tmp/solarwinds_install.txt
+    chdir: /tmp/swiagent/
+  when: path.stat.islnk is not defined
+
+- name: cleanup /tmp/swiagent directory
+  file:
+    path: /tmp/swiagent
+    recurse: yes
+    state: absent
+  when: path.stat.islnk is not defined
+
+- name: verify solarwinds started
+  service:
+    name: swiagentd
+    state: started
