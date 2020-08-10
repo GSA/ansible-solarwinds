@@ -1,20 +1,36 @@
 ---
+- name: checking for agent install
+  win_stat:
+    path: '{{ windows_solarwinds_agent_path }}'
+  register: path
+
+- debug:
+    msg: "solarwinds agent not found"
+  when: path.stat.islnk is not defined
+
+- debug:
+    msg: "solarwinds agent found skipping install"
+  when: path.stat.islnk is defined
+
 - name: create {{ windows_agent_log }} directory
   win_file:
     path: '{{ windows_agent_log }}'
     recurse: yes
     state: directory
+  when: path.stat.islnk is not defined
 
-- name: create {{ windows_agent_path }} directory
+- name: create {{ windows_solarwinds_agent_path }} directory
   win_file:
-    path: '{{ windows_agent_path }}'
+    path: '{{ windows_solarwinds_agent_path }}'
     recurse: yes
     state: directory
+  when: path.stat.islnk is not defined
 
-- name: copy solarWinds-agent.mst to {{ windows_agent_path }} directory
+- name: copy solarwinds-agent.mst to {{ windows_solarwinds_agent_path }} directory
   win_get_url:
     url: '{{ solarwinds_agent_config_url }}'
-    dest: '{{ windows_agent_path }}\\SolarWinds-Agent.mst'
+    dest: '{{ windows_solarwinds_agent_path }}\\SolarWinds-Agent.mst'
+  when: path.stat.islnk is not defined
 
 - name: install solarwinds agent (windows)
   win_package:
@@ -24,3 +40,9 @@
     validate_certs: no
     state: present
     arguments: /qn
+  when: path.stat.islnk is not defined
+
+- name: verify solarwinds started
+  win_service:
+    name: solarwindsagent64
+    state: started

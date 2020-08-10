@@ -6,19 +6,28 @@ This ansible role installs and configures the solarwinds agent required to commu
 Requirements
 ------------
 
-Required Packages (this role requires access to the following packages/installers)
-- solarwinds.rpm - redhat installer package
-- solarwinds.exe - windows installer package
-- linux-cw-agent.json - redhat configuration file
-- win-cw-agent.json - windows configuration file
+Required Packages (this role requires access to the following packages/installers via an external repository)
+- solarwinds.tar.gz - tar compressed redhat installer package
+- solarwinds.msi - windows installer package
 
 Role Variables
 --------------
 
+### Windows
+
 | Variable | Default | Purpose |
 | ------ | ------ | ------ |
-| redhat_solarwinds_agent_filename | "" | redhat installer rpm |
-| windows_solarwinds_agent_filename | "" | windows installer msi |
+| windows_solarwinds_agent_path | "C:\\Program Files (x86)\\SolarWinds\\Agent" | default windows install directory |
+| windows_solarwinds_agent_url | "" | windows installer msi |
+| windows_solarwinds_product_id | "" | windows product_id |
+| windows_agent_log | "C:\Temp\Logs" | default agent windows log directory |
+
+### Redhat
+
+| Variable | Default | Purpose |
+| ------ | ------ | ------ |
+| redhat_solarwinds_agent_path | "/opt/solarwinds" | default redhat install directory |
+| redhat_solarwinds_agent_url | "" | redhat installer rpm |
 
 Dependencies
 ------------
