@@ -52,7 +52,6 @@
 - name: cleanup /tmp/swiagent directory
   file:
     path: /tmp/swiagent
-    recurse: yes
     state: absent
   when: path.stat.islnk is not defined
 
