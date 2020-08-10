@@ -1,17 +1,20 @@
 ---
-- name: create {{ redhat_solarwinds_agent_path }} directory
+- name: copying swiagent.tar.gz to /tmp for install
+  get_url:
+    url: '{{ redhat_solarwinds_agent_path }}'
+    dest: /tmp/swiagent.tar.gz
+
+- name: extract swiagent.tar.gz to /tmp for install
+  unarchive:
+    src: /tmp/swiagent.tar.gz
+    dest: /tmp/swiagent
+
+- name: change shell permissions for swiagent
   file:
-    path: '{{ redhat_solarwinds_agent_path }}'
-    recurse: yes
+    path: /tmp/swiagent
     state: directory
-    mode: '0755'
+    recurse: yes
+    mode: a+x
 
-- name: create solarwinds config (redhat)
-  template:
-    src: amazon-solarwinds-agent.j2
-    dest: '{{ redhat_solarwinds_agent_path }}/amazon-solarwinds-agent.json'
-
-- name: install solarwinds agent (redhat)
-  yum:
-    name: '{{ redhat_solarwinds_agent_url }}'
-    state: installed
+- name: execute install.sh for swiagent
+  shell: /tmp/install.sh >> /tmp/solarwinds_install.txt
