@@ -1,48 +1,50 @@
 ---
 - name: checking for agent install
-  win_stat:
-    path: '{{ windows_solarwinds_agent_path }}'
-  register: path
+  win_service:
+    name: solarwindsagent64
+  register: agent
 
 - debug:
-    msg: "solarwinds agent not found"
-  when: path.stat.islnk is not defined
+    msg: "solarwinds agent not found (installing)"
+  when: not agent.exists
 
 - debug:
-    msg: "solarwinds agent found skipping install"
-  when: path.stat.islnk is defined
+    msg: "solarwinds agent found (skipping install)"
+  when: agent.exists
 
 - name: create {{ windows_agent_log }} directory
   win_file:
     path: '{{ windows_agent_log }}'
     recurse: yes
     state: directory
-  when: path.stat.islnk is not defined
+  when: not agent.exists
 
 - name: create {{ windows_solarwinds_agent_path }} directory
   win_file:
     path: '{{ windows_solarwinds_agent_path }}'
     recurse: yes
     state: directory
-  when: path.stat.islnk is not defined
+  when: not agent.exists
 
 - name: copy solarwinds-agent.mst to {{ windows_solarwinds_agent_path }} directory
   win_get_url:
     url: '{{ solarwinds_agent_config_url }}'
-    dest: '{{ windows_solarwinds_agent_path }}\\SolarWinds-Agent.mst'
-  when: path.stat.islnk is not defined
+    dest: '{{ windows_solarwinds_agent_path }}\SolarWinds-Agent.mst'
+    timeout: 600
+  when: not agent.exists
 
 - name: install solarwinds agent (windows)
   win_package:
     path: '{{ windows_solarwinds_agent_url }}'
-    log_path: '{{ windows_agent_log }}\\solarwinds_log.txt'
+    log_path: '{{ windows_agent_log }}\solarwinds_log.txt'
     product_id: '{{ windows_solarwinds_product_id }}'
-    validate_certs: no
     state: present
     arguments: /qn
-  when: path.stat.islnk is not defined
+    timeout: 600
+  when: not agent.exists
 
 - name: verify solarwinds started
   win_service:
     name: solarwindsagent64
     state: started
+    start_mode: auto
