@@ -33,6 +33,7 @@
     src: /tmp/swiagent.tar.gz
     dest: /tmp/swiagent
     remote_src: yes
+    mode: 0755
   when: not agent.stat.exists
 
 - name: change shell permissions for swiagent
@@ -53,6 +54,7 @@
   file:
     path: /tmp/swiagent
     state: absent
+    mode: 0755
   when: not agent.stat.exists
 
 - name: verify solarwinds started
