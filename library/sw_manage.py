@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
+from orionsdk import SwisClient
+from ansible.module_utils.basic import AnsibleModule
+import requests
+import urllib3
+
+
 DOCUMENTATION = '''
 ---
 module: sw_manage
@@ -13,13 +21,6 @@ EXAMPLES = '''
     state: "update"
     ip_address: "xxx.xxx.xxx.xxx"
 '''
-
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-from orionsdk import SwisClient
-from ansible.module_utils.basic import AnsibleModule
-import requests
-import urllib3
 
 __SWIS__ = None
 urllib3.disable_warnings()
@@ -99,6 +100,8 @@ def _custom_props(module):
     swis.update('swis://orion/Orion/Orion.Nodes/' + 'NodeID=' + nodeid + '/CustomProperties', Service_Group='GRACE')
     swis.update('swis://orion/Orion/Orion.Nodes/' + 'NodeID=' + nodeid + '/CustomProperties', SITE_ID='CAM - Amazon - Cloud Service Provider')
     swis.update('swis://orion/Orion/Orion.Nodes/' + 'NodeID=' + nodeid + '/CustomProperties', SME_Contact_Information=module.params['sme'])
+
+    module.exit_json(changed=True)
 
 requests.packages.urllib3.disable_warnings()
 
