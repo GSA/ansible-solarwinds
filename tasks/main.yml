@@ -6,3 +6,16 @@
 - name: Windows
   include: windows.yml
   when: ansible_os_family == 'Windows'
+
+- name: add custom properties to solarwinds node
+  sw_manage:
+    hostname: '{{ agent_secrets.sw_hostname }}'
+    username: '{{ ent_domain.username }}'
+    password: '{{ ent_domain.password }}'
+    state: "update"
+    ip_address: hostvars[inventory_hostname]['ansible_env'].SSH_CONNECTION.split(' ')[2]
+    env: '{{ env }}'
+    fisma: '{{ fisma }}'
+    project_lead: '{{ project_lead }}'
+    sme: '{{ sme }}'
+  run_once: true
