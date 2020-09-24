@@ -19,7 +19,7 @@ EXAMPLES = '''
     username: "SWUSERNAME"
     password: "SWPASSWORD"
     state: "update"
-    ip_address: "xxx.xxx.xxx.xxx"
+    caption: "node_hostname"
 '''
 
 __SWIS__ = None
@@ -34,7 +34,7 @@ def main():
             password=dict(required=True, no_log=True),
             state=dict(required=True, choices=['update']),
             node_id=dict(required=False),
-            ip_address=dict(required=False),
+            caption=dict(required=False),
             env=dict(required=False),
             fisma=dict(required=False),
             project_lead=dict(required=False),
@@ -66,14 +66,14 @@ def _find_node(module):
             '@node_id',
             node_id = module.params['node_id'])
 
-    elif module.params['ip_address'] is not None:
+    elif module.params['caption'] is not None:
         results = __SWIS__.query(
-            'SELECT NodeID, Caption, Unmanaged, UnManageFrom, UnManageUntil FROM Orion.Nodes WHERE IPAddress = '
-            '@ip_addr',
-            ip_addr = module.params['ip_address'])
+            'SELECT NodeID, Caption, Unmanaged, UnManageFrom, UnManageUntil FROM Orion.Nodes WHERE Caption = '
+            '@host_caption',
+            host_caption = module.params['caption'])
 
     else:
-        module.fail_json(msg="Invalid node_id or ip_address provided (FAILED)")
+        module.fail_json(msg="Invalid node_id or hostname provided (FAILED)")
 
     if results['results']:
         node['nodeId'] = results['results'][0]['NodeID']
@@ -102,8 +102,6 @@ def _custom_props(module):
     swis.update('swis://orion/Orion/Orion.Nodes/' + 'NodeID=' + nodeid + '/CustomProperties', SME_Contact_Information=module.params['sme'])
 
     module.exit_json(changed=True)
-
-requests.packages.urllib3.disable_warnings()
 
 if __name__ == '__main__':
     main()

@@ -13,9 +13,13 @@
     username: '{{ ent_domain.username }}'
     password: '{{ ent_domain.password }}'
     state: "update"
-    ip_address: hostvars[inventory_hostname]['ansible_env'].SSH_CONNECTION.split(' ')[2]
+    caption: "{{ hostvars[inventory_hostname]['ansible_facts']['hostname'] }}"
     env: '{{ env }}'
     fisma: '{{ fisma }}'
     project_lead: '{{ project_lead }}'
     sme: '{{ sme }}'
+  delegate_to: localhost
   run_once: true
+  retries: 5
+  delay: 15
+  ignore_errors: true
