@@ -38,7 +38,6 @@
     validate_certs: no
     disable_plugin: "*"
   with_items:
-    - nvme-cli
     - python-pip
   delegate_to: localhost
   ignore_errors: true
